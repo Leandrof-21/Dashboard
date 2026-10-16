@@ -35,3 +35,24 @@ def get_kpis(db: Session = Depends(get_db)):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/grafico-categorias")
+def get_grafico_categorias(db: Session = Depends(get_db)):
+    try:
+         query = text("""
+              SELECT categoria, SUM(valor) as total_receita
+              FROM vendas
+              GROUP BY categoria
+              ORDER BY total_receita DESC:
+         """)
+         result = db.execute(query).fetchall()
+
+         categorias = [row[0] for row in result]
+         receitas = [float(row[1]) for row in result]
+
+         return{
+             "labels": categorias,
+             "data": receitas
+         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
