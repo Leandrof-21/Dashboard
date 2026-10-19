@@ -1,6 +1,6 @@
 from http.client import HTTPException
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -36,6 +36,7 @@ def get_kpis(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# 1. Rota para os Gráficos: Agrupa receita por categoria
 @app.get("/api/grafico-categorias")
 def get_grafico_categorias(db: Session = Depends(get_db)):
     try:
@@ -47,6 +48,7 @@ def get_grafico_categorias(db: Session = Depends(get_db)):
          """)
          result = db.execute(query).fetchall()
 
+         # Mapeando os resultados para listas separadas
          categorias = [row[0] for row in result]
          receitas = [float(row[1]) for row in result]
 
@@ -54,5 +56,47 @@ def get_grafico_categorias(db: Session = Depends(get_db)):
              "labels": categorias,
              "data": receitas
          }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+#2. Rota para a Tabela: Suporta paginação (limit/skip) e filtro por categoria
+@app.get("/api/tabela-vendas")
+def get_tabela_vendas(
+    categoria: str | None = Query(default=None, description="Filtrar por categoria"),
+    limit: int = Query(default=5, ge=1, le=50, description="Itens por página"),
+    skip: int = Query(default=0, ge=0, description="Itens a pula"),
+    db: Session = Depends(get_db)
+):
+
+    try:
+        if categoria:
+            query = text("""
+                SELECT id, cliente, categoria, valor, data_venda
+                FROM vendas
+                WHERE categoria  = :cat
+                ORDER BY data_venda DESC 
+                LIMIT :limit OFFSET :skip;
+                """)
+            result = db.execute(query,{"cat": categoria,"limit": limit, "skip": skip }).fetchall()
+        else:
+            query = text("""
+                SELECT id, cliente, categoria, valor, data_venda
+                FROM vendas
+                ORDER BY data_venda DESC 
+                LIMIT :limit OFFSET :skip;
+                """)
+            result = db.execute(query, {"limit": limit, "skip": skip}).fetchall()
+
+        vendas_lista = []
+        for row in result:
+            vendas_lista.append({
+                "id": row[0],
+                "cliente": row[1],
+                "categoria": row[2],
+                "valor": float(row[3]),
+                "data_venda": str(row[4])
+            })
+
+            return {"vendas": vendas_lista}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
