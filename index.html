@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard de Vendas - MVP</title>
+        <!-- Chart.js via CDN para os gráficos--> 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Link para o arquivo CSS externo-->
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header>
+            <h1> Dashboard Executivo de Vendas</h1>
+        </header>
+
+        <!-- Container de KPIs (Indicadores principais)-->
+        <section>
+            <div class="kpi-card" style="border-left-color: #2ecc71;">
+                <h3>Faturamento Total</h3>
+                <p id="kpi-faturamento">R$ 0,00</p>
+            </div>
+
+            <div class="kpi-card" style="border-left-color: #3498db;">
+                <h3>Total de Vendas</h3>
+                <p id="kpi-qtd">0</p>
+            </div>
+
+            <div class="kpi-card" style="border-left-color: #9b59b6;">
+                <h3>Ticket Médio</h3>
+                <p id="kpi-ticket">R$ 0,00</p>
+            </div>
+        </section>
+
+        <!-- Grid principal contendo Gráfico e Tabela -->
+        <div class="content-grid">
+            <!-- Seção do Gráfico -->
+            <div class="section-card">
+                <h2>Vendas por Categoria</h2>
+                <canvas id="graficosCategorias"></canvas>
+            </div>
+
+            <!-- Seção da Tabela e Filtros-->
+            <div class="section-card">
+                <h2>Últimas Vendas</h2>
+                <div class="filter-group">
+                    <label for="select-categoria">Filtrar por Categoria</label>
+                    <select id="select-categoria" onchange="carregarTabela()">
+                        <option value="">Todas</option>
+                        <option value="Eletrônicos">Eletrônicos</option>
+                        <option value="Roupas">Roupas</option>
+                        <option value="Alimentos">Alimentos</option>
+                        <option value="Livros">Livros</option>
+                    </select>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Clientes</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo">
+                        <!-- As linhas das vendas serão injetadas dinamicamente via JavaScript -->
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+    </body>
+</html>
