@@ -37,7 +37,7 @@
             <!-- Seção do Gráfico -->
             <div class="section-card">
                 <h2>Vendas por Categoria</h2>
-                <canvas id="graficosCategorias"></canvas>
+                <canvas id="graficoCategorias"></canvas>
             </div>
 
             <!-- Seção da Tabela e Filtros-->
@@ -45,12 +45,11 @@
                 <h2>Últimas Vendas</h2>
                 <div class="filter-group">
                     <label for="select-categoria">Filtrar por Categoria</label>
-                    <select id="select-categoria" onchange="carregarTabela()">
-                        <option value="">Todas</option>
-                        <option value="Eletrônicos">Eletrônicos</option>
-                        <option value="Roupas">Roupas</option>
-                        <option value="Alimentos">Alimentos</option>
-                        <option value="Livros">Livros</option>
+                    <select id="filtroCategoria" class="...">
+                        <option value="Todas">Todas</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Serviços">Serviços</option>
+                        <option value="Software">Software</option>
                     </select>
                 </div>
 
@@ -70,5 +69,6 @@
                 </table>
             </div> 
         </div>
+        <script src="script.js"></script>
     </body>
 </html>
